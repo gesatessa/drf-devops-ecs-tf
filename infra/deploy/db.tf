@@ -1,7 +1,9 @@
 resource "aws_db_subnet_group" "main" {
   name = "${local.prefix}-rds"
+  # N.B. you MUST have at least two subnets in different AZs for RDS
   subnet_ids = [
     aws_subnet.private_a.id,
+    aws_subnet.private_b.id,
   ]
 
   tags = {
@@ -22,7 +24,7 @@ resource "aws_security_group" "rds" {
     description = "Allow Postgres access from ECS tasks"
 
     # make sure only ECS tasks can access RDS
-    # security_groups = [aws_security_group.ecs_tasks.id]
+    security_groups = [aws_security_group.ecs_tasks.id]
   }
 
   tags = {

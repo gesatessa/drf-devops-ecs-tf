@@ -72,6 +72,17 @@ resource "aws_subnet" "private_a" {
   }
 }
 
+resource "aws_subnet" "private_b" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.10.99.0/24"
+  availability_zone       = "${data.aws_region.current.id}b"
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name        = "${local.prefix}-private-b"
+    Environment = terraform.workspace
+  }
+}
 
 # VPC endpoints ========================= #
 # endpoints to allow access to AWS services without internet
