@@ -1,0 +1,40 @@
+name: Test & Lint
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  python-tests:
+    name: Python Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Test
+        run: docker compose run --rm app sh -c "python manage.py wait_for_db && python manage.py test"
+      - name: Lint
+        run: docker compose run --rm app sh -c "flake8 ."
+
+  terraform-lint:
+    name: Terraform Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Terraform Lint
+        run: |
+          cd infra/
+          docker compose run --rm tf -chdir=setup init -backend=false
+          docker compose run --rm tf -chdir=setup fmt -check
+          docker compose run --rm tf -chdir=setup validate
+          docker compose run --rm tf -chdir=deploy init -backend=false
+          docker compose run --rm tf -chdir=deploy fmt -check
+          docker compose run --rm tf -chdir=deploy validate
+          

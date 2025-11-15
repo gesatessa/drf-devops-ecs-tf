@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - prod
+
+jobs:
+  test-and-lint:
+    uses: ./.github/workflows/test-lint.yml
+  deploy:
+    name: Deploy
+    needs: test-and-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set Workspace
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/prod" ]; then
+            echo "TF_WORKSPACE=prod" >> $GITHUB_ENV
+          else
+            echo "TF_WORKSPACE=staging" >> $GITHUB_ENV
+          fi
+
+      - name: Push to ECR
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws
+          docker build --compress -t ${{ vars.ECR_REPO_APP }}:${{ github.sha }} -f Dockerfile .
+          docker push ${{ vars.ECR_REPO_APP }}:${{ github.sha }}
+          docker build --compress -t ${{ vars.ECR_REPO_PROXY }}:${{ github.sha }} -f Dockerfile.proxy .
+          docker push ${{ vars.ECR_REPO_PROXY }}:${{ github.sha }}
+
+      - name: TF apply
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+          TF_VAR_db_password: ${{ secrets.TF_VAR_DB_PASSWORD }}
+          TF_VAR_django_secret_key: ${{ secrets.TF_VAR_DJANGO_SECRET_KEY }}
+        run: |
+          export TF_VAR_ecr_app_image="${{ vars.ECR_REPO_APP }}:${{ github.sha }}"
+          export TF_VAR_ecr_proxy_image="${{ vars.ECR_REPO_PROXY }}:${{ github.sha }}"
+          cd infra/
+          docker compose run --rm tf -chdir=deploy init
+          docker compose run --rm tf -chdir=deploy workspace select -or-create $TF_WORKSPACE
+          docker compose run --rm tf -chdir=deploy apply -auto-approve
+          
