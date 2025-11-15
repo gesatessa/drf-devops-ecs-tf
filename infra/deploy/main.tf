@@ -10,11 +10,11 @@ terraform {
 
   backend "s3" {
     bucket               = "recipe-379738700125-django-api"
-    key                  = "deploy"
+    key                  = "deploy-key"
     region               = "us-east-1"
     use_lockfile         = true # https://developer.hashicorp.com/terraform/language/backend/s3s
     encrypt              = false
-    workspace_key_prefix = "environ"
+    workspace_key_prefix = "environ-ws"
   }
 }
 
@@ -27,11 +27,13 @@ provider "aws" {
       Environment = terraform.workspace
       Project     = var.project_name
       Contact     = var.contact
-      ManagedBy   = "terraform/setup"
+      ManagedBy   = "terraform/deploy"
     }
   }
 }
 
 locals {
-  prefix = var.project_name
+  prefix = "${var.project_name}-${terraform.workspace}"
 }
+
+data "aws_region" "current" {}

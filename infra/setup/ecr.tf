@@ -1,7 +1,7 @@
 resource "aws_ecr_repository" "api" {
   name                 = "${local.prefix}-api"
   image_tag_mutability = "MUTABLE"
-  force_delete         = true
+  force_delete         = true # in prod, consider FALSE; allow manual cleanup via terraform destroy
   image_scanning_configuration {
     scan_on_push = false # turn TRUE for prod
   }

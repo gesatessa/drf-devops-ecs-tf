@@ -8,6 +8,9 @@ services:
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+      - AWS_DEFAULT_REGION=${AWS_REGION}
       - TF_WORKSPACE=${TF_WORKSPACE}
-      
+      - TF_VAR_db_password=${TF_VAR_db_password}
+      - TF_VAR_ecr_proxy_image=${TF_VAR_ecr_proxy_image}
+      - TF_VAR_ecr_api_image=${TF_VAR_ecr_api_image}
+      - TF_VAR_django_secret_key=${TF_VAR_django_secret_key}

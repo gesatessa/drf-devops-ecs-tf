@@ -10,7 +10,7 @@ terraform {
 
   backend "s3" {
     bucket       = "recipe-379738700125-django-api"
-    key          = "setup"
+    key          = "setup-key"
     region       = "us-east-1"
     use_lockfile = true # https://developer.hashicorp.com/terraform/language/backend/s3s
     encrypt      = false
