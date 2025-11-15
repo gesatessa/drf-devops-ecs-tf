@@ -1,13 +1,7 @@
 name: Test & Lint
 
 on:
-  push:
-    branches:
-      - main
-      - 'release/*'
-  pull_request:
-    branches:
-      - main
+  workflow_call:
 
 jobs:
   python-tests:
