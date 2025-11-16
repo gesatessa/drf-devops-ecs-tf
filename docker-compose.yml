@@ -16,9 +16,9 @@ services:
              python manage.py runserver 0.0.0.0:8000"
     environment:
       - DB_HOST=db
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME:-db-name}
+      - DB_USER=${DB_USER:-db-user}
+      - DB_PASS=${DB_PASS:-changeme}
       - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
       - DEBUG=1
     depends_on:
@@ -29,9 +29,9 @@ services:
     volumes:
       - dev-db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=${DB_NAME:-db-name}
+      - POSTGRES_USER=${DB_USER:-db-user}
+      - POSTGRES_PASSWORD=${DB_PASS:-changeme}
 
 volumes:
   dev-db-data:
