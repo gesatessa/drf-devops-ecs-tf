@@ -48,7 +48,7 @@ resource "aws_lb_target_group" "api" {
 
   # make sure the LB forwards traffic only to healthy instances
   health_check {
-    path = "/api/healthz/"
+    path = "/api/health-check/" # endpoint for health check (see urls.py in the Django app)
     # protocol            = "HTTP"
     # matcher             = "200-399"
     # interval            = 30
