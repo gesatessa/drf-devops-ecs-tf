@@ -53,7 +53,7 @@ locals {
         { name = "DB_USER", value = aws_db_instance.main.username },
         { name = "DB_PASS", value = aws_db_instance.main.password },
         { name = "DJANGO_SECRET_KEY", value = var.django_secret_key },
-        { name = "ALLOWED_HOSTS", value = "*" },
+        { name = "DJANGO_ALLOWED_HOSTS", value = "*" },
       ]
 
       mountPoints = [
