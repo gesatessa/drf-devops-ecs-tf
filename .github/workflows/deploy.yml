@@ -37,7 +37,7 @@ jobs:
 
           docker build --compress -t ${{ vars.ECR_REPO_APP }}:${{ github.sha }} -f Dockerfile .
           docker push ${{ vars.ECR_REPO_APP }}:${{ github.sha }}
-          docker build --compress -t ${{ vars.ECR_REPO_PROXY }}:${{ github.sha }} -f Dockerfile.proxy .
+          docker build --compress -t ${{ vars.ECR_REPO_PROXY }}:${{ github.sha }} -f Dockerfile ./proxy
           docker push ${{ vars.ECR_REPO_PROXY }}:${{ github.sha }}
 
       - name: TF apply
