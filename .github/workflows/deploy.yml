@@ -53,6 +53,8 @@ jobs:
           export TF_VAR_ecr_proxy_image="${{ vars.ECR_REPO_PROXY }}:${{ github.sha }}"
           cd infra/
           docker compose run --rm tf -chdir=deploy init
-          docker compose run --rm tf -chdir=deploy workspace select -or-create $TF_WORKSPACE
+          # NOTE: we've set workspace via env variable, TF_WORKSPACE, so no need to run workspace select
+          #docker compose run --rm tf -chdir=deploy workspace select -or-create $TF_WORKSPACE
+          docker compose run --rm tf -chdir=deploy apply -auto-approve
           docker compose run --rm tf -chdir=deploy apply -auto-approve
           
