@@ -107,11 +107,12 @@ resource "aws_security_group" "ecs_tasks" {
   }
 
   ingress {
-    from_port   = 8000
-    to_port     = 8000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow inbound HTTP traffic"
+    from_port = 8000
+    to_port   = 8000
+    protocol  = "tcp"
+    # cidr_blocks = ["0.0.0.0/0"] # open to the world
+    security_groups = [aws_security_group.lb.id] # only allow traffic from the load balancer
+    description     = "Allow inbound HTTP traffic"
   }
 }
 
@@ -129,14 +130,31 @@ resource "aws_ecs_service" "api" {
   enable_execute_command = true
 
   network_configuration {
-    assign_public_ip = true # just for testing; in production, use private subnets with a NAT gateway
+    # assign_public_ip = true # just for testing; in production, use private subnets with a NAT gateway
+
+    # subnets = [
+    #   aws_subnet.public_a.id
+    # ]
 
     subnets = [
-      aws_subnet.public_a.id
+      aws_subnet.private_a.id,
+      aws_subnet.private_b.id
     ]
 
     security_groups = [
       aws_security_group.ecs_tasks.id
     ]
+  }
+
+  # load balancer acts as a front door to the ECS service
+  # it forwards incoming requests to the ECS tasks
+  load_balancer {
+    # this is the ALB we created earlier
+    target_group_arn = aws_lb_target_group.api.arn
+    container_name = "proxy" # name of the container to route traffic to
+    container_port = 8000 # port on which the container is listening
+    # N.B. task vs. container
+    # task = ECS task definition (multiple containers)
+    # container = individual container within the task
   }
 }
