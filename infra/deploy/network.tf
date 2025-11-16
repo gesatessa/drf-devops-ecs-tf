@@ -10,7 +10,6 @@ resource "aws_vpc" "main" {
   }
 }
 
-
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
@@ -45,7 +44,7 @@ resource "aws_route_table" "public_a" {
   }
 }
 
-resource "aws_route_table_association" "name" {
+resource "aws_route_table_association" "public_a" {
   subnet_id      = aws_subnet.public_a.id
   route_table_id = aws_route_table.public_a.id
 }
@@ -55,6 +54,41 @@ resource "aws_route" "public_a_internet_access" {
   destination_cidr_block = "0.0.0.0/0" # public access
   gateway_id             = aws_internet_gateway.main.id
 }
+
+
+# public subnet B ----------------------- #
+resource "aws_subnet" "public_b" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = "10.10.44.0/24"
+  availability_zone       = "${data.aws_region.current.id}b"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name        = "${local.prefix}-public-b"
+    Environment = terraform.workspace
+  }
+}
+
+resource "aws_route_table" "public_b" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name        = "${local.prefix}-public-b-rt"
+    Environment = terraform.workspace
+  }
+}
+
+resource "aws_route_table_association" "public_b" {
+  subnet_id      = aws_subnet.public_b.id
+  route_table_id = aws_route_table.public_b.id
+}
+
+resource "aws_route" "public_b_internet_access" {
+  route_table_id         = aws_route_table.public_b.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.main.id
+}
+
 
 # private subnet ========================= #
 # used for internal services (EC2, RDS, etc)

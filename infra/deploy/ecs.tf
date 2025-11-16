@@ -120,7 +120,7 @@ resource "aws_security_group" "ecs_tasks" {
 resource "aws_ecs_service" "api" {
   name            = "${local.prefix}-api"
   cluster         = aws_ecs_cluster.main.name
-  task_definition = aws_ecs_task_definition.api.family
+  task_definition = aws_ecs_task_definition.api.arn
   desired_count   = 1
 
   # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/platform-fargate.html
