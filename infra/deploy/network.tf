@@ -58,8 +58,8 @@ resource "aws_route" "public_a_internet_access" {
 
 # public subnet B ----------------------- #
 resource "aws_subnet" "public_b" {
-  vpc_id     = aws_vpc.main.id
-  cidr_block = "10.10.44.0/24"
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.10.44.0/24"
   availability_zone       = "${data.aws_region.current.id}b"
   map_public_ip_on_launch = true
 
