@@ -31,7 +31,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-east-1
         run: |
-          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.$AWS_REGION.amazonaws
+          aws ecr get-login-password --region $AWS_REGION \
+          | docker login --username AWS \
+          --password-stdin ${{ vars.AWS_ACC_ID }}.dkr.ecr.$AWS_REGION.amazonaws.com
+
           docker build --compress -t ${{ vars.ECR_REPO_APP }}:${{ github.sha }} -f Dockerfile .
           docker push ${{ vars.ECR_REPO_APP }}:${{ github.sha }}
           docker build --compress -t ${{ vars.ECR_REPO_PROXY }}:${{ github.sha }} -f Dockerfile.proxy .
