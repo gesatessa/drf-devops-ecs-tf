@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+from socket import gethostname, gethostbyname
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,13 @@ DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
+
+if os.environ.get('AWS_EXECUTION_ENV') == 'AWS_ECS_FARGATE':
+    print("+++ Running in AWS ECS Fargate - adding container IP to ALLOWED_HOSTS +++")
+    print('============> ', os.environ.get('AWS_EXECUTION_ENV'))
+    hostname = gethostname()
+    ip_address = gethostbyname(hostname)
+    ALLOWED_HOSTS.append(ip_address)
 
 # Application definition
 INSTALLED_APPS = [
