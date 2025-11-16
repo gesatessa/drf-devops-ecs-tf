@@ -71,6 +71,19 @@ resource "aws_ecs_task_definition" "api" {
     name = "static"
   }
 
+  volume {
+    name = "efs-media"
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.media.id
+      transit_encryption = "ENABLED"
+
+      authorization_config {
+        access_point_id = aws_efs_access_point.media_ap.id
+        iam             = "DISABLED" # disable because we use access point
+      }
+    }
+  }
+
   runtime_platform {
     operating_system_family = "LINUX"
     cpu_architecture        = "X86_64"

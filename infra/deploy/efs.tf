@@ -52,7 +52,7 @@ resource "aws_efs_mount_target" "private_b" {
 resource "aws_efs_access_point" "media_ap" {
   file_system_id = aws_efs_file_system.media.id
   root_directory {
-    path = "api/media" # directory inside EFS where media files are stored
+    path = "/api/media" # directory inside EFS where media files are stored
 
     creation_info {
       owner_gid   = 101 # comes from the ecs user inside the container (see Dockerfile)

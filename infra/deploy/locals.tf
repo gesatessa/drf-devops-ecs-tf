@@ -24,6 +24,11 @@ locals {
           sourceVolume  = "static"
           containerPath = "/vol/static"
           readOnly      = true
+        },
+        {
+          sourceVolume  = "efs-media"
+          containerPath = "/vol/media" # where media files are stored (see NGINX config)
+          readOnly      = true         # we don't need write access from NGINX; only read and serve files
         }
       ]
 
@@ -61,6 +66,11 @@ locals {
           sourceVolume  = "static"
           containerPath = "/vol/web/static"
           readOnly      = false
+        },
+        {
+          sourceVolume  = "efs-media"
+          containerPath = "/vol/web/media" # where media files are stored (see MEDIA_ROOT in settings.py)
+          readOnly      = true
         }
       ]
 
