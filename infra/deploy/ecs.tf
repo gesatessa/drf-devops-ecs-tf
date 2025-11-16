@@ -151,8 +151,8 @@ resource "aws_ecs_service" "api" {
   load_balancer {
     # this is the ALB we created earlier
     target_group_arn = aws_lb_target_group.api.arn
-    container_name = "proxy" # name of the container to route traffic to
-    container_port = 8000 # port on which the container is listening
+    container_name   = "proxy" # name of the container to route traffic to
+    container_port   = 8000    # port on which the container is listening
     # N.B. task vs. container
     # task = ECS task definition (multiple containers)
     # container = individual container within the task
