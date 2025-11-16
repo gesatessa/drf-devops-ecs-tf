@@ -95,6 +95,8 @@ resource "aws_security_group" "ecs_tasks" {
     description = "Allow outbound HTTPS traffic"
   }
 
+  # NFS port for EFS volume access
+  # so that ECS tasks can read/write media files
   egress {
     from_port = 5432
     to_port   = 5432
@@ -104,6 +106,18 @@ resource "aws_security_group" "ecs_tasks" {
       aws_subnet.private_b.cidr_block,
     ]
     description = "Allow outbound Postgres traffic to RDS"
+  }
+
+  egress {
+    from_port = 2049
+    to_port   = 2049
+    protocol  = "tcp"
+    cidr_blocks = [
+      #aws_vpc.main.cidr_block
+      aws_subnet.private_a.cidr_block,
+      aws_subnet.private_b.cidr_block,
+    ]
+    description = "Allow outbound NFS traffic to EFS"
   }
 
   ingress {
