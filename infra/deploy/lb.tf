@@ -33,7 +33,7 @@ resource "aws_lb" "api" {
   security_groups    = [aws_security_group.lb.id]
   subnets = [
     aws_subnet.public_a.id,
-    #aws_subnet.public_b.id
+    aws_subnet.public_b.id
   ]
 }
 
