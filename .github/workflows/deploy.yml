@@ -9,8 +9,7 @@ on:
 jobs:
   test-and-lint:
     uses: ./.github/workflows/test-lint.yml
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+
   deploy:
     name: Deploy
     needs: test-and-lint
