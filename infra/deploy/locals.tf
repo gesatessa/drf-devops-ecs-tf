@@ -70,7 +70,7 @@ locals {
         {
           sourceVolume  = "efs-media"
           containerPath = "/vol/web/media" # where media files are stored (see MEDIA_ROOT in settings.py)
-          readOnly      = true
+          readOnly      = false
         }
       ]
 

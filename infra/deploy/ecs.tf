@@ -108,8 +108,6 @@ resource "aws_security_group" "ecs_tasks" {
     description = "Allow outbound HTTPS traffic"
   }
 
-  # NFS port for EFS volume access
-  # so that ECS tasks can read/write media files
   egress {
     from_port = 5432
     to_port   = 5432
@@ -121,6 +119,8 @@ resource "aws_security_group" "ecs_tasks" {
     description = "Allow outbound Postgres traffic to RDS"
   }
 
+  # NFS port for EFS volume access
+  # so that ECS tasks can read/write media files
   egress {
     from_port = 2049
     to_port   = 2049
