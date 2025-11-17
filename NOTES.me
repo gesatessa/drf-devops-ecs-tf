@@ -1,0 +1,62 @@
+
+$ curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 3816k  100 3816k    0     0  33.3M      0 --:--:-- --:--:-- --:--:-- 33.5M
+ubuntu:drf-devops-ecs-tf$ ls
+Dockerfile  LICENSE  README.md  app  docker-compose-deploy.yml  docker-compose.yml  infra  proxy  requirements.dev.txt  requirements.txt  scripts  session-manager-plugin.deb
+ubuntu:drf-devops-ecs-tf$ sudo dpkg -i session-manager-plugin.deb 
+Selecting previously unselected package session-manager-plugin.
+(Reading database ... 124869 files and directories currently installed.)
+Preparing to unpack session-manager-plugin.deb ...
+Preparing for install
+Unpacking session-manager-plugin (1.2.707.0-1) ...
+Setting up session-manager-plugin (1.2.707.0-1) ...
+Creating symbolic link for session-manager-plugin
+ubuntu:drf-devops-ecs-tf$ session-manager-plugin
+
+The Session Manager plugin was installed successfully. Use the AWS CLI to start a session.
+
+ubuntu:drf-devops-ecs-tf$ 
+ubuntu:drf-devops-ecs-tf$ 
+ubuntu:drf-devops-ecs-tf$ 
+ubuntu:drf-devops-ecs-tf$ aws ecs execute-command --region us-east-1 --cluster recipe-api-staging-ecs-cluster --task c5e00268f56f49328cbbe17450d05f44 --container api --interactive --command "/bin/sh"
+
+The Session Manager plugin was installed successfully. Use the AWS CLI to start a session.
+
+
+Starting session with SessionId: ecs-execute-command-rb3byryfr6o9p7ur93zculnuqi
+/app # 
+/app # ls
+app        core       manage.py  recipe     user
+/app # python manage.py createsuperuser
++++ Running in AWS ECS Fargate - adding container IP to ALLOWED_HOSTS +++
+Email: skye@hotmail.com
+Password: 
+Password (again): 
+Superuser created successfully.
+/app # 
+/app # df -h
+Filesystem                Size      Used Available Use% Mounted on
+overlay                  29.4G      9.7G     18.2G  35% /
+tmpfs                    64.0M         0     64.0M   0% /dev
+shm                     463.9M         0    463.9M   0% /dev/shm
+tmpfs                   463.9M         0    463.9M   0% /sys/fs/cgroup
+/dev/nvme1n1              8.0E         0      8.0E   0% /vol/web/media
+/dev/nvme1n1             29.4G      9.7G     18.2G  35% /vol/web/static
+/dev/nvme1n1             29.4G      9.7G     18.2G  35% /vol/web/static
+127.0.0.1:/               8.0E         0      8.0E   0% /vol/web/media
+/dev/nvme1n1             29.4G      9.7G     18.2G  35% /etc/hosts
+/dev/nvme1n1             29.4G      9.7G     18.2G  35% /etc/resolv.conf
+/dev/nvme1n1             29.4G      9.7G     18.2G  35% /etc/hostname
+
+
+
+# To connect to the database
+
+```sh
+# from within the container:
+PGPASSWORD=$DB_PASS psql -h $DB_HOST -U $DB_USER -d $DB_NAME -p $DB_PORT
+
+
+```
