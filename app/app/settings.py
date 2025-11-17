@@ -29,11 +29,12 @@ DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS if h.strip()]
 
+# Add container IP to ALLOWED_HOSTS when running in AWS ECS Fargate
+# ALB health checks hit the container using the IP address, so we need to allow that.
 if os.environ.get('AWS_EXECUTION_ENV') == 'AWS_ECS_FARGATE':
     print("+++ Running in AWS ECS Fargate - adding container IP to ALLOWED_HOSTS +++")
-    print('============> ', os.environ.get('AWS_EXECUTION_ENV'))
     hostname = gethostname()
-    ip_address = gethostbyname(hostname)
+    ip_address = gethostbyname(hostname) # the internal IP address of the container inside the AWS VPC
     ALLOWED_HOSTS.append(ip_address)
 
 # Application definition
@@ -89,11 +90,11 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': os.environ.get('DB_HOST', "db"),
+        'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT', 5432),
-        'NAME': os.environ.get('DB_NAME', "db-name"),
-        'USER': os.environ.get('DB_USER', "db-user"),
-        'PASSWORD': os.environ.get('DB_PASS', "changeme"),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
     }
 }
 
